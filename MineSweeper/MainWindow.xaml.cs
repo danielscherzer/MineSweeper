@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace MineSweeper
 {
@@ -12,6 +11,7 @@ namespace MineSweeper
 		public MainWindow()
 		{
 			InitializeComponent();
+			Window_SizeChanged(this, null);
 			mineGrid = new MineGrid(10, 10, 10);
 			cells = new Cell[mineGrid.Columns, mineGrid.Rows];
 			for (int x = 0; x < mineGrid.Columns; ++x)
@@ -27,7 +27,7 @@ namespace MineSweeper
 				for (int y = 0; y < grid.RowDefinitions.Count; ++y)
 				{
 					var mines = mineGrid.HowManyMines(x, y);
-					var cell = new Cell((0 == mines) ? "" : mines.ToString(), OpenCell);
+					var cell = new Cell(mines, OpenCell);
 					grid.Children.Add(cell);
 					Grid.SetColumn(cell, x);
 					Grid.SetRow(cell, y);
@@ -46,6 +46,19 @@ namespace MineSweeper
 			if (0 == mineGrid.HowManyMines(x, y))
 			{
 				mineGrid.ForEachNeighbor(x, y, (x_, y_) => cells[x_, y_].OpenCell());
+			}
+		}
+
+		private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			var captionHeight = SystemParameters.CaptionHeight;
+			if (Width > Height)
+			{
+				Height = Width + captionHeight;
+			}
+			else
+			{
+				Width = Height - captionHeight;
 			}
 		}
 	}

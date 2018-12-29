@@ -3,38 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MineSweeper"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
-	<Grid Name="cell">
-		<!--<Grid.Style>
-			<Style TargetType="Grid">
-				<Style.Triggers>
-					<EventTrigger RoutedEvent="MouseLeftButtonDown">
-						<BeginStoryboard>
-							<Storyboard>
-								<DoubleAnimation To="0" Duration="0:0:1.5" Storyboard.></DoubleAnimation>
-							</Storyboard>
-						</BeginStoryboard>
-					</EventTrigger>
-				</Style.Triggers>
-			</Style>
-		</Grid.Style>-->
-		<Border BorderThickness="1" BorderBrush="Black" Background="Snow">
-			<!--<Border.Style>
-				<Style TargetType="Border">
-					<Setter Property="Background" Value="LightGray"/>
-					<Style.Triggers>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Setter Property="Background" Value="CornflowerBlue"/>
-						</Trigger>
-					</Style.Triggers>
-				</Style>
-			</Border.Style>-->
+	<Grid Name="cell" Background="DarkGray">
+		<Grid.Resources>
+			<!-- A brush for flat 3D panel borders -->
+			<LinearGradientBrush x:Key="Flat3DBorderBrush">
+				<GradientStop Color="#FFF" Offset="0" />
+				<GradientStop Color="#DDD" Offset="0.499" />
+				<GradientStop Color="#AAA" Offset="0.501" />
+				<GradientStop Color="#888" Offset="1" />
+			</LinearGradientBrush>
+		</Grid.Resources>
+		<Border BorderThickness="1" BorderBrush="DarkGray" Background="#DEDEDE">
 			<Viewbox>
-				<TextBlock Name="textBlock" TextAlignment="Center" HorizontalAlignment="Center" />
+				<TextBlock Name="textBlockMines" TextAlignment="Center" HorizontalAlignment="Center" />
 			</Viewbox>
 		</Border>
-		<Button Name="button" Click="OpenCell" MouseUp="Button_MouseUp"/>
+		<Border Name="closed" BorderThickness="3" BorderBrush="{StaticResource Flat3DBorderBrush}" Background="Silver" MouseLeftButtonDown="OpenCell" MouseRightButtonDown="MarkCell">
+			<Border.Triggers>
+				<EventTrigger RoutedEvent="MouseLeftButtonDown">
+					<BeginStoryboard>
+						<Storyboard Name="animationOpen">
+							<DoubleAnimation To="0" Duration="0:0:0.5" Storyboard.TargetName="closed" Storyboard.TargetProperty="Opacity"/>
+							<BooleanAnimationUsingKeyFrames Duration="0:0:0.5" Storyboard.TargetName="closed" Storyboard.TargetProperty="IsEnabled">
+								<DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
+								<DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.5" />
+							</BooleanAnimationUsingKeyFrames>
+						</Storyboard>
+					</BeginStoryboard>
+				</EventTrigger>
+			</Border.Triggers>
+			<Viewbox Name="mark" Opacity="0">
+				<TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="X"/>
+			</Viewbox>
+		</Border>
 	</Grid>
 </UserControl>

@@ -22,7 +22,7 @@ namespace MineSweeper
 				var y = rand.Next(0, Rows);
 				if(0 == cells[x,y])
 				{
-					cells[x, y] = mine;
+					cells[x, y] = Mine;
 					ForEachNeighbor(x, y, Increment);
 					++i;
 				}
@@ -35,7 +35,7 @@ namespace MineSweeper
 
 		public byte HowManyMines(int x, int y) => cells[x, y];
 
-		private const byte mine = 255;
+		private const byte Mine = 255;
 		private readonly byte[,] cells;
 
 		public void ForEachNeighbor(int x, int y, Action<int, int> action)
@@ -70,7 +70,7 @@ namespace MineSweeper
 
 		private void Increment(int x, int y)
 		{
-			if (mine != cells[x, y]) ++cells[x, y];
+			if (Mine != cells[x, y]) ++cells[x, y];
 		}
 	}
 }
