@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="MineSweeper.Cell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MineSweeper"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="800">
+	<Grid Name="cell">
+		<!--<Grid.Style>
+			<Style TargetType="Grid">
+				<Style.Triggers>
+					<EventTrigger RoutedEvent="MouseLeftButtonDown">
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation To="0" Duration="0:0:1.5" Storyboard.></DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</EventTrigger>
+				</Style.Triggers>
+			</Style>
+		</Grid.Style>-->
+		<Border BorderThickness="1" BorderBrush="Black" Background="Snow">
+			<!--<Border.Style>
+				<Style TargetType="Border">
+					<Setter Property="Background" Value="LightGray"/>
+					<Style.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="CornflowerBlue"/>
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</Border.Style>-->
+			<Viewbox>
+				<TextBlock Name="textBlock" TextAlignment="Center" HorizontalAlignment="Center" />
+			</Viewbox>
+		</Border>
+		<Button Name="button" Click="OpenCell" MouseUp="Button_MouseUp"/>
+	</Grid>
+</UserControl>
