@@ -15,6 +15,14 @@ namespace MineSweeper
 		{
 			InitializeComponent();
 			textBlockMines.Text = 0 == mines ? "" : mines.ToString();
+			if (255 == mines)
+			{
+				grid.Children.Remove(viewBox);
+			}
+			else
+			{
+				grid.Children.Remove(mine);
+			}
 			this.action = action ?? throw new ArgumentNullException(nameof(action));
 		}
 

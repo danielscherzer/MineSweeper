@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="800">
-	<Grid Name="cell" Background="DarkGray">
+             mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="800">
+	<Grid Name="cell">
 		<Grid.Resources>
 			<!-- A brush for flat 3D panel borders -->
 			<LinearGradientBrush x:Key="Flat3DBorderBrush">
@@ -16,19 +15,52 @@
 			</LinearGradientBrush>
 		</Grid.Resources>
 		<Border BorderThickness="1" BorderBrush="DarkGray" Background="#DEDEDE">
-			<Viewbox>
-				<TextBlock Name="textBlockMines" TextAlignment="Center" HorizontalAlignment="Center" />
-			</Viewbox>
+			<Grid Name="grid">
+				<Canvas Name="mine" Width="700" Height="700">
+					<Ellipse Fill="Black" Height="500" Width="500" Margin="100,100,0,0"/>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="299" Canvas.Top="9"/>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="300" Canvas.Top="594"/>
+					<Rectangle Fill="Black" Height="100" Width="100" Margin="10,300,0,0"/>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="593" Canvas.Top="300"/>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="100" Canvas.Top="100" RenderTransformOrigin="0.5,0.5">
+						<Rectangle.RenderTransform>
+							<RotateTransform Angle="45"/>
+						</Rectangle.RenderTransform>
+					</Rectangle>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="508" Canvas.Top="509" RenderTransformOrigin="0.5,0.5">
+						<Rectangle.RenderTransform>
+							<RotateTransform Angle="45"/>
+						</Rectangle.RenderTransform>
+					</Rectangle>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="90" Canvas.Top="506" RenderTransformOrigin="0.5,0.5">
+						<Rectangle.RenderTransform>
+							<RotateTransform Angle="45"/>
+						</Rectangle.RenderTransform>
+					</Rectangle>
+					<Rectangle Fill="Black" Height="100" Width="100" Canvas.Left="504" Canvas.Top="92" RenderTransformOrigin="0.5,0.5">
+						<Rectangle.RenderTransform>
+							<RotateTransform Angle="45"/>
+						</Rectangle.RenderTransform>
+					</Rectangle>
+				</Canvas>
+				<Viewbox Name="viewBox"  d:IsHidden="True">
+					<TextBlock x:Name="textBlockMines" TextAlignment="Center" HorizontalAlignment="Center"/>
+				</Viewbox>
+			</Grid>
 		</Border>
-		<Border Name="closed" BorderThickness="3" BorderBrush="{StaticResource Flat3DBorderBrush}" Background="Silver" MouseLeftButtonDown="OpenCell" MouseRightButtonDown="MarkCell">
+		<Border Name="closed" BorderThickness="3" BorderBrush="{StaticResource Flat3DBorderBrush}" Background="Silver" MouseLeftButtonDown="OpenCell" MouseRightButtonDown="MarkCell" d:IsHidden="True">
+			<!--<Border.RenderTransform>
+				<TranslateTransform x:Name="translate"/>
+			</Border.RenderTransform>-->
 			<Border.Triggers>
 				<EventTrigger RoutedEvent="MouseLeftButtonDown">
 					<BeginStoryboard>
 						<Storyboard Name="animationOpen">
+							<!--<DoubleAnimation To="100" Duration="0:0:1" Storyboard.TargetName="translate" Storyboard.TargetProperty="X"/>-->
 							<DoubleAnimation To="0" Duration="0:0:0.5" Storyboard.TargetName="closed" Storyboard.TargetProperty="Opacity"/>
-							<BooleanAnimationUsingKeyFrames Duration="0:0:0.5" Storyboard.TargetName="closed" Storyboard.TargetProperty="IsEnabled">
+							<BooleanAnimationUsingKeyFrames Duration="0:0:1" Storyboard.TargetName="closed" Storyboard.TargetProperty="IsEnabled">
 								<DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
-								<DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.5" />
+								<DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:1" />
 							</BooleanAnimationUsingKeyFrames>
 						</Storyboard>
 					</BeginStoryboard>
