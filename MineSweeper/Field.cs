@@ -2,21 +2,44 @@
 
 namespace MineSweeper
 {
-	public class Field : INotifyPropertyChanged
+	public class Field : IField
 	{
-		private bool open;
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		public bool Open
+		public bool IsMine
 		{
-			get => open;
+			get => _isMine;
 			set
 			{
-				open = value;
-				InvokePropertyChanged(nameof(Open));
+				_isMine = value;
+				NeighborMines = 255;
 			}
 		}
+		public byte NeighborMines { get; set; }
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public bool IsOpen
+		{
+			get => _open;
+			set
+			{
+				_open = value;
+				IsMarked = false;
+				InvokePropertyChanged(nameof(IsOpen));
+			}
+		}
+
+		public bool IsMarked
+		{
+			get => _isMarked;
+			set
+			{
+				_isMarked = value;
+				InvokePropertyChanged(nameof(IsMarked));
+			}
+		}
+
+		private bool _open = false;
+		private bool _isMarked = false;
+		private bool _isMine;
 
 		private void InvokePropertyChanged(string propertyName)
 		{

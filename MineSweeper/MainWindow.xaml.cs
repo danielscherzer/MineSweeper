@@ -11,7 +11,7 @@ namespace MineSweeper
 		public MainWindow()
 		{
 			InitializeComponent();
-			mineGrid = new MineGrid(10, 10, 10);
+			mineGrid = new MineGrid(15, 15, 20);
 			cells = new Cell[mineGrid.Columns, mineGrid.Rows];
 			grid.Rows = mineGrid.Rows;
 			grid.Columns = mineGrid.Columns;
@@ -40,6 +40,11 @@ namespace MineSweeper
 			{
 				mineGrid.ForEachNeighbor(x, y, (x_, y_) => cells[x_, y_].OpenCell());
 			}
+		}
+
+		private void ButtonRestart_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 }

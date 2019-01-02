@@ -5,7 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		mc:Ignorable="d" Name="window"
         Title="MainWindow" Height="760" Background="DarkGray" WindowStartupLocation="CenterScreen" Width="800">
-	<Viewbox>
-		<UniformGrid Name="grid" Rows="10" Columns="10"/>
-	</Viewbox>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<StackPanel Orientation="Horizontal">
+			<Button Content="Restart" Click="ButtonRestart_Click"/>
+		</StackPanel>
+		<Viewbox Grid.Row="1">
+			<UniformGrid Name="grid" Rows="10" Columns="10"/>
+		</Viewbox>
+	</Grid>
 </Window>
