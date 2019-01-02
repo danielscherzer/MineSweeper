@@ -54,49 +54,49 @@
 				</EventTrigger>
 			</Style.Triggers>
 		</Style>
-		
-		<DataTemplate x:Key="empty">
+
+		<DataTemplate x:Key="emptyCell">
 			<Border Style="{StaticResource openBorder}"/>
 		</DataTemplate>
-		<DataTemplate x:Key="mine">
+		<DataTemplate x:Key="mineCell">
 			<Border Style="{StaticResource openBorder}">
 				<Viewbox>
-					<Canvas Name="mine" Width="700" Height="700">
+					<Canvas Width="700" Height="700">
 						<Path Fill="Black" Height="414.715" Canvas.Left="144.857" Canvas.Top="143.286" Width="412.622" Stretch="Fill" Data="{Binding Source={StaticResource pathMine}, Path=Data}"/>
 					</Canvas>
 				</Viewbox>
 			</Border>
 		</DataTemplate>
-		<DataTemplate x:Key="observer">
+		<DataTemplate x:Key="observerCell">
 			<Border Style="{StaticResource openBorder}">
 				<Viewbox>
 					<TextBlock Text="{Binding NeighborMines}" TextAlignment="Center" HorizontalAlignment="Center">
-				<TextBlock.Style>
-					<Style TargetType="TextBlock">
-						<Setter Property="Foreground" Value="Black"/>
-						<Style.Triggers>
-							<Trigger Property="Text" Value="1">
-								<Setter Property="Foreground" Value="Blue"/>
-							</Trigger>
-							<Trigger Property="Text" Value="2">
-								<Setter Property="Foreground" Value="Green"/>
-							</Trigger>
-							<Trigger Property="Text" Value="3">
-								<Setter Property="Foreground" Value="Red"/>
-							</Trigger>
-							<Trigger Property="Text" Value="4">
-								<Setter Property="Foreground" Value="DarkBlue"/>
-							</Trigger>
-							<Trigger Property="Text" Value="5">
-								<Setter Property="Foreground" Value="DarkRed"/>
-							</Trigger>
-							<Trigger Property="Text" Value="6">
-								<Setter Property="Foreground" Value="DarkCyan"/>
-							</Trigger>
-						</Style.Triggers>
-					</Style>
-				</TextBlock.Style>
-			</TextBlock>
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="Foreground" Value="Black"/>
+								<Style.Triggers>
+									<Trigger Property="Text" Value="1">
+										<Setter Property="Foreground" Value="Blue"/>
+									</Trigger>
+									<Trigger Property="Text" Value="2">
+										<Setter Property="Foreground" Value="Green"/>
+									</Trigger>
+									<Trigger Property="Text" Value="3">
+										<Setter Property="Foreground" Value="Red"/>
+									</Trigger>
+									<Trigger Property="Text" Value="4">
+										<Setter Property="Foreground" Value="DarkBlue"/>
+									</Trigger>
+									<Trigger Property="Text" Value="5">
+										<Setter Property="Foreground" Value="DarkRed"/>
+									</Trigger>
+									<Trigger Property="Text" Value="6">
+										<Setter Property="Foreground" Value="DarkCyan"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
 				</Viewbox>
 			</Border>
 		</DataTemplate>
@@ -106,7 +106,7 @@
 		<DataTemplate x:Key="markedCell">
 			<Border Style="{StaticResource closedBorder}">
 				<Viewbox>
-					<Canvas Name="mine" Width="700" Height="700">
+					<Canvas Width="700" Height="700">
 						<Path Fill="Snow" Height="414.715" Canvas.Left="144.857" Canvas.Top="143.286" Width="412.622" Stretch="Fill" Data="{Binding Source={StaticResource pathMine}, Path=Data}"/>
 					</Canvas>
 				</Viewbox>
@@ -114,13 +114,13 @@
 		</DataTemplate>
 		<!--cell style for template selection-->
 		<Style x:Key="cell" TargetType="ContentPresenter">
-			<Setter Property="ContentTemplate" Value="{StaticResource observer}"/>
+			<Setter Property="ContentTemplate" Value="{StaticResource observerCell}"/>
 			<Style.Triggers>
 				<DataTrigger Binding="{Binding IsMine}" Value="true">
-					<Setter Property="ContentTemplate" Value="{StaticResource mine}"/>
+					<Setter Property="ContentTemplate" Value="{StaticResource mineCell}"/>
 				</DataTrigger>
 				<DataTrigger Binding="{Binding NeighborMines}" Value="0">
-					<Setter Property="ContentTemplate" Value="{StaticResource empty}"/>
+					<Setter Property="ContentTemplate" Value="{StaticResource emptyCell}"/>
 				</DataTrigger>
 				<DataTrigger Binding="{Binding IsOpen}" Value="false">
 					<Setter Property="ContentTemplate" Value="{StaticResource closedCell}"/>
@@ -147,21 +147,47 @@
 		</DataTemplate>
 	</Window.Resources>
 	<!--start visual tree-->
-	<Grid Background="DarkGray">
+	<Grid Background="DarkGray" DataContext="{DynamicResource mineSweeperModel}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40"/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<Grid>
-			<!--<Grid.ColumnDefinitions>
+			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition/>
 				<ColumnDefinition/>
-			</Grid.ColumnDefinitions>-->
+			</Grid.ColumnDefinitions>
 			<Button Content="Restart" Click="Restart"/>
+			<Label Grid.Column="1">
+				<StackPanel Orientation="Horizontal">
+					<!--<Viewbox>
+						<Canvas Width="700" Height="700">
+							<Path Fill="Snow" Height="414.715" Canvas.Left="144.857" Canvas.Top="143.286" Width="412.622" Stretch="Fill" Data="{Binding Source={StaticResource pathMine}, Path=Data}"/>
+						</Canvas>
+					</Viewbox>-->
+					<TextBlock Text="MinesToMark:"/>
+					<TextBlock Text="{Binding MinesToMark}"/>
+				</StackPanel>
+			</Label>
 		</Grid>
 		<Viewbox Grid.Row="1">
-			<ItemsControl DataContext="{DynamicResource mineSweeperModel}" ItemsSource="{Binding MineField}" ItemTemplate="{DynamicResource gridTemplate}" />
+			<ItemsControl ItemsSource="{Binding MineField}" ItemTemplate="{DynamicResource gridTemplate}" />
+		</Viewbox>
+		<Viewbox Grid.Row="1">
+			<TextBlock Name="won" Background="Purple" Foreground="DeepPink" TextWrapping="Wrap" TextAlignment="Center">
+				<TextBlock.Style>
+					<Style TargetType="TextBlock">
+						<Setter Property="Visibility" Value="Hidden"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsWon}" Value="true">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBlock.Style>
+				You won!<LineBreak/>You are so amazing!!!
+			</TextBlock>
 		</Viewbox>
 	</Grid>
 </Window>

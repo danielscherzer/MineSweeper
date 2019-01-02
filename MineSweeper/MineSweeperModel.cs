@@ -1,32 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace MineSweeper
 {
-	public class MineSweeperModel
+	public class MineSweeperModel : INotifyPropertyChanged
 	{
 		public MineSweeperModel()
 		{
-			const int mines = 10;
+			_minesToMark = 1;
 			_mineField = new List<List<Field>>();
 			//initialize with empty
 			for (int x = 0; x < Columns; ++x)
 			{
 				var col = new List<Field>();
-				for(int y = 0; y < Rows; ++y)
+				for (int y = 0; y < Rows; ++y)
 				{
 					var field = new Field();
 					//local copy of variables for late lambda evaluation necessary
 					var xLocal = x;
 					var yLocal = y;
-					field.PropertyChanged += (s, e) => FieldChanged(field, xLocal, yLocal);
+					field.PropertyChanged += (s, e) => FieldChanged(field, e.PropertyName, xLocal, yLocal);
 					col.Add(field);
 				}
 				_mineField.Add(col);
 			}
 			var rand = new Random();
 			//place mines
-			for (int i = 0; i < mines;)
+			for (int i = 0; i < MinesToMark;)
 			{
 				var x = rand.Next(0, Columns);
 				var y = rand.Next(0, Rows);
@@ -44,20 +45,55 @@ namespace MineSweeper
 		public int Columns => 10;
 		public int Rows => 10;
 
-		public bool IsLost { get; private set; } = false;
+		public bool IsLost
+		{
+			get => _isLost; private set
+			{
+				_isLost = value;
+				InvokePropertyChanged(nameof(IsLost));
+			}
+		}
 
+
+		public bool IsWon
+		{
+			get => _isWon; private set
+			{
+				_isWon = value;
+				InvokePropertyChanged(nameof(IsWon));
+			}
+		}
+
+		public int MinesToMark
+		{
+			get => _minesToMark;
+			set
+			{
+				_minesToMark = value;
+				InvokePropertyChanged(nameof(MinesToMark));
+			}
+		}
 		private readonly List<List<Field>> _mineField;
+		private bool _isLost = false;
+		private int _minesToMark;
+		private bool _isWon;
 
-		private void FieldChanged(Field field, int x, int y)
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void FieldChanged(Field field, string propertyName, int x, int y)
 		{
 			if (IsLost) return;
-			if (field.IsOpen)
+			if(nameof(field.IsMarked) == propertyName)
+			{
+				MinesToMark += field.IsMarked ? -1 : 1;
+			}
+			else if (field.IsOpen)
 			{
 				if (field.IsMine)
 				{
 					//open mine field -> lost
-					IsLost = true;
 					Lost();
+					return;
 				}
 				else if (0 == field.NeighborMines)
 				{
@@ -69,17 +105,42 @@ namespace MineSweeper
 					ForEachNeighbor(x, y, Open);
 				}
 			}
+			if(0 == MinesToMark)
+			{
+				CheckWin();
+			}
+		}
+
+		private void InvokePropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		private void Lost()
 		{
-			foreach(var column in _mineField)
+			IsLost = true;
+			foreach (var column in _mineField)
 			{
-				foreach(var field in column)
+				foreach (var field in column)
 				{
 					field.IsOpen = true;
 				}
 			}
+		}
+
+		private void CheckWin()
+		{
+			foreach (var column in _mineField)
+			{
+				foreach (var field in column)
+				{
+					if(!field.IsOpen && !field.IsMarked)
+					{
+						return;
+					}
+				}
+			}
+			IsWon = true;
 		}
 
 		private void ForEachNeighbor(int x, int y, Action<int, int> action)

@@ -22,7 +22,7 @@ namespace MineSweeper
 			set
 			{
 				_open = value;
-				IsMarked = false;
+				if(IsMarked) IsMarked = false;
 				InvokePropertyChanged(nameof(IsOpen));
 			}
 		}
