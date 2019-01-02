@@ -11,40 +11,25 @@ namespace MineSweeper
 		public MainWindow()
 		{
 			InitializeComponent();
-			mineGrid = new MineGrid(15, 15, 20);
-			cells = new Cell[mineGrid.Columns, mineGrid.Rows];
-			grid.Rows = mineGrid.Rows;
-			grid.Columns = mineGrid.Columns;
-			for (int x = 0; x < mineGrid.Columns; ++x)
-			{
-				for (int y = 0; y < mineGrid.Rows; ++y)
-				{
-					var mines = mineGrid.HowManyMines(x, y);
-					var cell = new Cell(mines, OpenCell);
-					grid.Children.Add(cell);
-					Grid.SetColumn(cell, x);
-					Grid.SetRow(cell, y);
-					cells[x, y] = cell;
-				}
-			}
 		}
 
-		private MineGrid mineGrid;
-		private Cell[,] cells;
-
-		private void OpenCell(Cell cell)
+		private void Restart(object sender, RoutedEventArgs e)
 		{
-			var x = Grid.GetColumn(cell);
-			var y = Grid.GetRow(cell);
-			if (0 == mineGrid.HowManyMines(x, y))
-			{
-				mineGrid.ForEachNeighbor(x, y, (x_, y_) => cells[x_, y_].OpenCell());
-			}
+			Resources["mineSweeperModel"] = new MineSweeperModel();
 		}
 
-		private void ButtonRestart_Click(object sender, RoutedEventArgs e)
+		private void OpenCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
+			var element = sender as Border;
+			var field = element.DataContext as IField;
+			field.IsOpen = true;
+		}
 
+		private void MarkCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			var element = sender as Border;
+			var field = element.DataContext as IField;
+			field.IsMarked = !field.IsMarked;
 		}
 	}
 }
