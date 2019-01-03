@@ -8,7 +8,7 @@ namespace MineSweeper
 	{
 		public MineSweeperModel()
 		{
-			_minesToMark = 1;
+			_minesToMark = 10;
 			_mineField = new List<List<Field>>();
 			//initialize with empty
 			for (int x = 0; x < Columns; ++x)

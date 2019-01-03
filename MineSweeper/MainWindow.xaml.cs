@@ -15,7 +15,8 @@ namespace MineSweeper
 
 		private void Restart(object sender, RoutedEventArgs e)
 		{
-			Resources["mineSweeperModel"] = new MineSweeperModel();
+			//Resources["mineSweeperModel"] = new MineSweeperModel();
+			//Resources["timer"] = new Timer();
 		}
 
 		private void OpenCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
