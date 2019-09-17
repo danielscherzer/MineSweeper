@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace MineSweeper
 {
 	public class MineSweeperModel : INotifyPropertyChanged
 	{
-		public MineSweeperModel()
+		public MineSweeperModel() : this(10, 10, 10) { }
+		public MineSweeperModel(int mines, int columns, int rows)
 		{
-			_minesToMark = 10;
+			Columns = columns;
+			Rows = rows;
+			_minesToMark = mines;
 			_mineField = new List<List<Field>>();
 			//initialize with empty
 			for (int x = 0; x < Columns; ++x)
@@ -38,12 +42,35 @@ namespace MineSweeper
 					++i;
 				}
 			}
+
+			timer.Interval = TimeSpan.FromSeconds(1);
+			timer.Tick += (s, e) => ++SecondsPlayed;
+			timer.Start();
+		}
+
+		public void OpenEmptyField()
+		{
+			foreach (var fields in MineField)
+			{
+				foreach (var field in fields)
+				{
+					if (0 == field.NeighborMines)
+					{
+						if (!field.IsOpen)
+						{
+							field.IsOpen = true;
+							return;
+						}
+					}
+				}
+			}
 		}
 
 		public IEnumerable<IEnumerable<IField>> MineField => _mineField;
 
-		public int Columns => 10;
-		public int Rows => 10;
+		public int Columns { get; }
+
+		public int Rows { get; }
 
 		public bool IsLost
 		{
@@ -53,7 +80,6 @@ namespace MineSweeper
 				InvokePropertyChanged(nameof(IsLost));
 			}
 		}
-
 
 		public bool IsWon
 		{
@@ -73,10 +99,22 @@ namespace MineSweeper
 				InvokePropertyChanged(nameof(MinesToMark));
 			}
 		}
+
+		public int SecondsPlayed
+		{
+			get => _secondsPlayed;
+			private set
+			{
+				_secondsPlayed = value;
+				InvokePropertyChanged(nameof(SecondsPlayed));
+			}
+		}
 		private readonly List<List<Field>> _mineField;
 		private bool _isLost = false;
 		private int _minesToMark;
-		private bool _isWon;
+		private bool _isWon = false;
+		private int _secondsPlayed = 0;
+		private DispatcherTimer timer = new DispatcherTimer();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -126,6 +164,7 @@ namespace MineSweeper
 					field.IsOpen = true;
 				}
 			}
+			timer.IsEnabled = false;
 		}
 
 		private void CheckWin()
@@ -141,6 +180,7 @@ namespace MineSweeper
 				}
 			}
 			IsWon = true;
+			timer.IsEnabled = false;
 		}
 
 		private void ForEachNeighbor(int x, int y, Action<int, int> action)
