@@ -21,3 +21,8 @@ if you want to contribute to this project.
 
 ## License
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+`pocketWatchPathData` icon made by [Icon Fonts](https://www.onlinewebfonts.com/icon/20107) is licensed under CC BY 3.0
+
+`redoPathData` icon made by [simpleicon](https://www.flaticon.com/authors/simpleicon) from [flaticon.com](https://www.flaticon.com/free-icon/redo-circular-arrow_34186) is licensed under CC BY 3.0
+
