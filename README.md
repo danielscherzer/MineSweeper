@@ -1,6 +1,6 @@
-# Batch Execute
+# MineSweeper
 
-[![Build status](https://ci.appveyor.com/api/projects/status/d1eqkbkgom7hd9xu?svg=true)](https://ci.appveyor.com/project/danielscherzer/batchexecute)
+[![Build status](https://ci.appveyor.com/api/projects/status/lwufj2k8k5imobmc?svg=true)](https://ci.appveyor.com/project/danielscherzer/minesweeper)
 
 ---------------------------------------
 
