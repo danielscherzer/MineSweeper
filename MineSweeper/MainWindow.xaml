@@ -143,6 +143,12 @@
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>
 		</DataTemplate>
+		<Style TargetType="Button">
+			<Setter Property="BorderThickness" Value="3"/>
+			<Setter Property="Height" Value="auto"/>
+			<Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource 3dBrush}"/>
+		</Style>
 	</Window.Resources>
 	<!--start visual tree-->
 	<Grid Background="DarkGray" DataContext="{DynamicResource mineSweeperModel}">
@@ -150,7 +156,7 @@
 			<RowDefinition Name="row" Height="1*"/>
 			<RowDefinition Height="13*"/>
 		</Grid.RowDefinitions>
-		<UniformGrid Columns="3">
+		<Grid>
 			<!--mines left-->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Style="{StaticResource wonHideStyle}">
 				<Viewbox>
@@ -161,35 +167,31 @@
 				</Viewbox>
 			</StackPanel>
 			<!--restart button-->
-			<UniformGrid Columns="5">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 				<Viewbox>
-					<!--<Button Click="Restart" Width="30" Height="30" HorizontalAlignment="Center" BorderThickness="3" BorderBrush="{StaticResource 3dBrush}">
-						<Viewbox>-->
-							<Path Margin="100" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource redoPathData}"/>
-						<!--</Viewbox>
-					</Button>-->
+					<Path Margin="100" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource redoPathData}"/>
 				</Viewbox>
-				<Button Click="RestartEasy" BorderThickness="3">
+				<Button Click="RestartEasy">
 					<Viewbox>
 						<TextBlock Text="1" FontWeight="Bold"/>
 					</Viewbox>
 				</Button>
-				<Button Click="RestartMedium" BorderThickness="3">
+				<Button Click="RestartMedium">
 					<Viewbox>
 						<TextBlock Text="2" FontWeight="Bold" />
 					</Viewbox>
 				</Button>
-				<Button Click="RestartHard" BorderThickness="3">
+				<Button Click="RestartHard">
 					<Viewbox>
 						<TextBlock Text="3" FontWeight="Bold"/>
 					</Viewbox>
 				</Button>
-				<Button Click="OpenEmptyField" BorderThickness="3">
+				<Button Click="OpenEmptyField">
 					<Viewbox>
 						<TextBlock Text="?" FontWeight="Bold"/>
 					</Viewbox>
 				</Button>
-			</UniformGrid>
+			</StackPanel>
 			<!--timer-->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource wonHideStyle}">
 				<Viewbox>
@@ -199,7 +201,7 @@
 					<TextBlock Foreground="{StaticResource darkBrush}" Text="{Binding SecondsPlayed}" Margin="0,0,3,0" FontWeight="Bold"/>
 				</Viewbox>
 			</StackPanel>
-		</UniformGrid>
+		</Grid>
 		<!--mine grid-->
 		<Viewbox Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding MineField}" ItemTemplate="{DynamicResource gridTemplate}">

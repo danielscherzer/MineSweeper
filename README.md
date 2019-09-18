@@ -4,12 +4,13 @@
 
 ---------------------------------------
 ![Screenshot](screenshot.png)
+
 This is a WPF MVVM implementation of the well known Minesweeper game.
 See the [change log](CHANGELOG.md) for changes and road map.
 
 ## Features 
-- Copy/paste file lists
-- Option to detect idle applications (no CPU ticks) and close them
+- Help button that will open an empty region
+- 3 difficulties
 
 ## Errors and questions
 Please us the GitHub [Issue function](https://github.com/danielscherzer/MineSweeper/issues/new) to report errors or ask questions.
