@@ -3,11 +3,11 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/lwufj2k8k5imobmc?svg=true)](https://ci.appveyor.com/project/danielscherzer/minesweeper)
 
 ---------------------------------------
-
+![Screenshot](screenshot.png)
 This is a WPF MVVM implementation of the well known Minesweeper game.
 See the [change log](CHANGELOG.md) for changes and road map.
 
-## Features
+## Features 
 - Copy/paste file lists
 - Option to detect idle applications (no CPU ticks) and close them
 

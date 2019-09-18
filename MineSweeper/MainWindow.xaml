@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MineSweeper"
 		mc:Ignorable="d"
-        Title="MainWindow" Height="760" Width="685.714" WindowStartupLocation="CenterScreen">
+        Title="MineSweeper" Height="760" Width="685.714" WindowStartupLocation="CenterScreen">
 	<Window.Resources>
 		<local:MineSweeperModel x:Key="mineSweeperModel"/>
 
