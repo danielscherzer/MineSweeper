@@ -6,6 +6,10 @@
     <Version>0.2</Version>
     <Authors>Daniel Scherzer</Authors>
     <Company>DMS</Company>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <Description>An implementation of the well known Minesweeper game with WPF</Description>
     <Copyright>2018 Daniel Scherzer</Copyright>
   </PropertyGroup>
