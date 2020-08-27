@@ -2,13 +2,15 @@ version: 0.2.{build}
 
 skip_tags: true # avoid deploy to GitHub loop 
 
-# enable patching of AssemblyInfo.* files with APPVEYOR version
-assembly_info:
+# enable patching of dot net core/standard *.csproj files with APPVEYOR version
+dotnet_csproj:
   patch: true
-  file: AssemblyInfo.*
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "{version}"
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 
 
 image: Visual Studio 2019

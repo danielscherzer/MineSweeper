@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -10,5 +9,4 @@
     <Description>An implementation of the well known Minesweeper game with WPF</Description>
     <Copyright>2018 Daniel Scherzer</Copyright>
   </PropertyGroup>
-
 </Project>
