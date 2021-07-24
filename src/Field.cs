@@ -14,7 +14,7 @@ namespace MineSweeper
 			}
 		}
 		public byte NeighborMines { get; set; }
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
 		public bool IsOpen
 		{

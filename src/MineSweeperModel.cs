@@ -13,6 +13,7 @@ namespace MineSweeper
 			Columns = columns;
 			Rows = rows;
 			_minesToMark = mines;
+			Mines = mines;
 			_mineField = new List<List<Field>>();
 			//initialize with empty
 			for (int x = 0; x < Columns; ++x)
@@ -24,7 +25,7 @@ namespace MineSweeper
 					//local copy of variables for late lambda evaluation necessary
 					var xLocal = x;
 					var yLocal = y;
-					field.PropertyChanged += (s, e) => FieldChanged(field, e.PropertyName, xLocal, yLocal);
+					field.PropertyChanged += (s, e) => FieldChanged(field, e.PropertyName ?? string.Empty, xLocal, yLocal);
 					col.Add(field);
 				}
 				_mineField.Add(col);
@@ -112,11 +113,14 @@ namespace MineSweeper
 		private readonly List<List<Field>> _mineField;
 		private bool _isLost = false;
 		private int _minesToMark;
+
+		public int Mines { get; }
+
 		private bool _isWon = false;
 		private int _secondsPlayed = 0;
-		private DispatcherTimer timer = new DispatcherTimer();
+		private readonly DispatcherTimer timer = new();
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
 		private void FieldChanged(Field field, string propertyName, int x, int y)
 		{
@@ -143,10 +147,7 @@ namespace MineSweeper
 					ForEachNeighbor(x, y, Open);
 				}
 			}
-			if(0 == MinesToMark)
-			{
-				CheckWin();
-			}
+			CheckWin();
 		}
 
 		private void InvokePropertyChanged(string propertyName)
@@ -169,18 +170,19 @@ namespace MineSweeper
 
 		private void CheckWin()
 		{
+			int closedCount = 0;
 			foreach (var column in _mineField)
 			{
 				foreach (var field in column)
 				{
-					if(!field.IsOpen && !field.IsMarked)
+					if(!field.IsOpen)
 					{
-						return;
+						closedCount++;
 					}
 				}
 			}
-			IsWon = true;
-			timer.IsEnabled = false;
+			IsWon = closedCount == Mines;
+			if(IsWon) timer.IsEnabled = false;
 		}
 
 		private void ForEachNeighbor(int x, int y, Action<int, int> action)

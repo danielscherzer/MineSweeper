@@ -30,16 +30,13 @@ namespace MineSweeper
 
 		private void OpenCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			var element = sender as Border;
-			var field = element.DataContext as IField;
-			field.IsOpen = true;
+			if ((sender as Border)?.DataContext is IField field) field.IsOpen = true;
 		}
 
 		private void MarkCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			var element = sender as Border;
-			var field = element.DataContext as IField;
-			field.IsMarked = !field.IsMarked;
+			if ((sender as Border)?.DataContext is IField field) 
+				field.IsMarked = !field.IsMarked;
 		}
 
 		private void OpenEmptyField(object sender, RoutedEventArgs e)
