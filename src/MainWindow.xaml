@@ -198,7 +198,7 @@
 					<Path Margin="180" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource pocketWatchPathData}"/>
 				</Viewbox>
 				<Viewbox>
-					<TextBlock Foreground="{StaticResource darkBrush}" Text="{Binding SecondsPlayed}" Margin="0,0,3,0" FontWeight="Bold"/>
+					<TextBlock Foreground="{StaticResource darkBrush}" Text="{Binding TimePlayed}" Margin="0,0,3,0" FontWeight="Bold"/>
 				</Viewbox>
 			</StackPanel>
 		</Grid>

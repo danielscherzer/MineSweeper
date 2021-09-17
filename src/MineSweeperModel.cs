@@ -18,24 +18,24 @@ namespace MineSweeper
 			//initialize with empty
 			for (int x = 0; x < Columns; ++x)
 			{
-				var col = new List<Field>();
+				List<Field> col = new();
 				for (int y = 0; y < Rows; ++y)
 				{
-					var field = new Field();
+					Field field = new();
 					//local copy of variables for late lambda evaluation necessary
-					var xLocal = x;
-					var yLocal = y;
+					int xLocal = x;
+					int yLocal = y;
 					field.PropertyChanged += (s, e) => FieldChanged(field, e.PropertyName ?? string.Empty, xLocal, yLocal);
 					col.Add(field);
 				}
 				_mineField.Add(col);
 			}
-			var rand = new Random();
+			Random rand = new();
 			//place mines
 			for (int i = 0; i < MinesToMark;)
 			{
-				var x = rand.Next(0, Columns);
-				var y = rand.Next(0, Rows);
+				int x = rand.Next(0, Columns);
+				int y = rand.Next(0, Rows);
 				if (!_mineField[x][y].IsMine)
 				{
 					_mineField[x][y].IsMine = true;
@@ -45,7 +45,7 @@ namespace MineSweeper
 			}
 
 			timer.Interval = TimeSpan.FromSeconds(1);
-			timer.Tick += (s, e) => ++SecondsPlayed;
+			timer.Tick += (s, e) => TimePlayed += TimeSpan.FromSeconds(1);
 			timer.Start();
 		}
 
@@ -101,23 +101,23 @@ namespace MineSweeper
 			}
 		}
 
-		public int SecondsPlayed
+		public TimeSpan TimePlayed
 		{
-			get => _secondsPlayed;
+			get => _timePlayed;
 			private set
 			{
-				_secondsPlayed = value;
-				InvokePropertyChanged(nameof(SecondsPlayed));
+				_timePlayed = value;
+				InvokePropertyChanged(nameof(TimePlayed));
 			}
 		}
 		private readonly List<List<Field>> _mineField;
-		private bool _isLost = false;
+		private bool _isLost;
 		private int _minesToMark;
 
 		public int Mines { get; }
 
-		private bool _isWon = false;
-		private int _secondsPlayed = 0;
+		private bool _isWon;
+		private TimeSpan _timePlayed = TimeSpan.FromSeconds(0);
 		private readonly DispatcherTimer timer = new();
 
 		public event PropertyChangedEventHandler? PropertyChanged;
