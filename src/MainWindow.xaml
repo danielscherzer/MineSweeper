@@ -226,7 +226,7 @@
 					</Style>
 				</TextBlock.Style>
 				<Bold>
-					YOU WON IN <Run Text="{Binding Path=SecondsPlayed, Mode=OneWay}"/> SECONDS!<LineBreak/>
+					YOU WON IN <Run Text="{Binding Path=TimePlayed, Mode=OneWay}"/>!<LineBreak/>
 					YOU ARE SO AMAZING!!!
 				</Bold>
 			</TextBlock>
