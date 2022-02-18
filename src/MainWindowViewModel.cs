@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Threading;
 
@@ -10,97 +9,24 @@ namespace MineSweeper
 		public MainWindowViewModel() : this(10, 10, 10) { }
 		public MainWindowViewModel(int mines, int columns, int rows)
 		{
-			Columns = columns;
-			Rows = rows;
-			_minesToMark = mines;
-			Mines = mines;
-			_mineField = new List<List<Cell>>();
-			//initialize with empty
-			for (int x = 0; x < Columns; ++x)
-			{
-				List<Cell> col = new();
-				for (int y = 0; y < Rows; ++y)
-				{
-					Cell cell = new();
-					//local copy of variables for late lambda evaluation necessary
-					int xLocal = x;
-					int yLocal = y;
-					cell.PropertyChanged += (s, e) => CellChanged(cell, e.PropertyName ?? string.Empty, xLocal, yLocal);
-					col.Add(cell);
-				}
-				_mineField.Add(col);
-			}
-			Random rand = new();
-			//place mines
-			for (int i = 0; i < MinesToMark;)
-			{
-				int x = rand.Next(0, Columns);
-				int y = rand.Next(0, Rows);
-				if (!_mineField[x][y].IsMine)
-				{
-					_mineField[x][y].IsMine = true;
-					ForEachNeighbor(x, y, Increment);
-					++i;
-				}
-			}
+			Board = new MineFieldViewModel(mines, columns, rows);
+			Board.PropertyChanged += Board_PropertyChanged;
 
 			timer.Interval = TimeSpan.FromSeconds(1);
 			timer.Tick += (s, e) => TimePlayed += TimeSpan.FromSeconds(1);
 			timer.Start();
 		}
 
+		private void Board_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if(Board.IsLost || Board.IsWon) timer.IsEnabled = false;
+		}
+
 		public MineFieldViewModel Board { get; } = new();
 
 		public void OpenEmptyCell()
 		{
-			foreach (var column in MineField)
-			{
-				foreach (var cell in column)
-				{
-					if (0 == cell.NeighborMines)
-					{
-						if (!cell.IsOpen)
-						{
-							cell.IsOpen = true;
-							return;
-						}
-					}
-				}
-			}
-		}
-
-		public IEnumerable<IEnumerable<ICell>> MineField => _mineField;
-
-		public int Columns { get; }
-
-		public int Rows { get; }
-
-		public bool IsLost
-		{
-			get => _isLost; private set
-			{
-				_isLost = value;
-				InvokePropertyChanged(nameof(IsLost));
-			}
-		}
-
-		public bool IsWon
-		{
-			get => _isWon; private set
-			{
-				_isWon = value;
-				InvokePropertyChanged(nameof(IsWon));
-			}
-		}
-
-		public int MinesToMark
-		{
-			get => _minesToMark;
-			private set
-			{
-				_minesToMark = value;
-				InvokePropertyChanged(nameof(MinesToMark));
-			}
+			Board.OpenEmptyCell();
 		}
 
 		public TimeSpan TimePlayed
@@ -112,117 +38,15 @@ namespace MineSweeper
 				InvokePropertyChanged(nameof(TimePlayed));
 			}
 		}
-		private readonly List<List<Cell>> _mineField;
-		private bool _isLost;
-		private int _minesToMark;
-
-		public int Mines { get; }
-
-		private bool _isWon;
-		private TimeSpan _timePlayed = TimeSpan.FromSeconds(0);
-		private readonly DispatcherTimer timer = new();
 
 		public event PropertyChangedEventHandler? PropertyChanged;
-
-		private void CellChanged(Cell cell, string propertyName, int x, int y)
-		{
-			if (IsLost || IsLost) return;
-			if(nameof(cell.IsMarked) == propertyName)
-			{
-				MinesToMark += cell.IsMarked ? -1 : 1;
-			}
-			else if (cell.IsOpen)
-			{
-				if (cell.IsMine)
-				{
-					//open mine cell -> lost
-					Lost();
-					return;
-				}
-				else if (0 == cell.NeighborMines)
-				{
-					void Open(int x_, int y_)
-					{
-						var f = _mineField[x_][y_];
-						if (!f.IsOpen) f.IsOpen = true;
-					}
-					ForEachNeighbor(x, y, Open);
-				}
-			}
-			CheckWin();
-		}
+		
+		private TimeSpan _timePlayed = TimeSpan.FromSeconds(0);
+		private readonly DispatcherTimer timer = new();
 
 		private void InvokePropertyChanged(string propertyName)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		private void Lost()
-		{
-			IsLost = true;
-			timer.IsEnabled = false;
-			foreach (var column in _mineField)
-			{
-				foreach (var cell in column)
-				{
-					cell.IsOpen = true;
-				}
-			}
-		}
-
-		private void CheckWin()
-		{
-			int closedCount = 0;
-			foreach (var column in _mineField)
-			{
-				foreach (var cell in column)
-				{
-					if(!cell.IsOpen)
-					{
-						closedCount++;
-					}
-				}
-			}
-			IsWon = closedCount == Mines;
-			if (IsWon)
-			{
-				timer.IsEnabled = false;
-			}
-		}
-
-		private void ForEachNeighbor(int x, int y, Action<int, int> action)
-		{
-			if (action == null) throw new ArgumentNullException(nameof(action));
-
-			var left = 0 < x;
-			if (left)
-			{
-				action(x - 1, y);
-			}
-			var right = x + 1 < Columns;
-			if (right)
-			{
-				action(x + 1, y);
-			}
-			var bottom = 0 < y;
-			if (bottom)
-			{
-				action(x, y - 1);
-				if (left) action(x - 1, y - 1);
-				if (right) action(x + 1, y - 1);
-			}
-			var top = y + 1 < Rows;
-			if (top)
-			{
-				action(x, y + 1);
-				if (left) action(x - 1, y + 1);
-				if (right) action(x + 1, y + 1);
-			}
-		}
-
-		private void Increment(int x, int y)
-		{
-			if (!_mineField[x][y].IsMine) ++_mineField[x][y].NeighborMines;
 		}
 	}
 }
