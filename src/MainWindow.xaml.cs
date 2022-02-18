@@ -15,17 +15,17 @@ namespace MineSweeper
 
 		private void RestartEasy(object sender, RoutedEventArgs e)
 		{
-			Resources["mineSweeperModel"] = new MineSweeperModel(10, 10, 10);
+			Resources["mineSweeperModel"] = new MainWindowViewModel(10, 10, 10);
 		}
 
 		private void RestartMedium(object sender, RoutedEventArgs e)
 		{
-			Resources["mineSweeperModel"] = new MineSweeperModel(30, 15, 10);
+			Resources["mineSweeperModel"] = new MainWindowViewModel(30, 15, 10);
 		}
 
 		private void RestartHard(object sender, RoutedEventArgs e)
 		{
-			Resources["mineSweeperModel"] = new MineSweeperModel(100, 30, 20);
+			Resources["mineSweeperModel"] = new MainWindowViewModel(100, 30, 20);
 		}
 
 		private void PrimaryActionCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -54,7 +54,7 @@ namespace MineSweeper
 
 		private void OpenEmptyCell(object sender, RoutedEventArgs e)
 		{
-			var mineSweeperModel = Resources["mineSweeperModel"] as MineSweeperModel;
+			var mineSweeperModel = Resources["mineSweeperModel"] as MainWindowViewModel;
 			mineSweeperModel?.OpenEmptyCell();
 		}
 
@@ -69,6 +69,13 @@ namespace MineSweeper
 		private static void OpenCell(object sender)
 		{
 			if ((sender as Border)?.DataContext is ICell cell) cell.IsOpen = true;
+		}
+
+		private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+#if DEBUG
+			if (e.Key == System.Windows.Input.Key.Escape) Close();
+#endif
 		}
 	}
 }

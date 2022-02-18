@@ -5,10 +5,10 @@ using System.Windows.Threading;
 
 namespace MineSweeper
 {
-	public class MineSweeperModel : INotifyPropertyChanged
+	public class MainWindowViewModel : INotifyPropertyChanged
 	{
-		public MineSweeperModel() : this(10, 10, 10) { }
-		public MineSweeperModel(int mines, int columns, int rows)
+		public MainWindowViewModel() : this(10, 10, 10) { }
+		public MainWindowViewModel(int mines, int columns, int rows)
 		{
 			Columns = columns;
 			Rows = rows;
@@ -48,6 +48,8 @@ namespace MineSweeper
 			timer.Tick += (s, e) => TimePlayed += TimeSpan.FromSeconds(1);
 			timer.Start();
 		}
+
+		public MineFieldViewModel Board { get; } = new();
 
 		public void OpenEmptyCell()
 		{

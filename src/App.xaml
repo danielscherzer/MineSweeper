@@ -8,7 +8,6 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Light.xaml" />
 				<ResourceDictionary Source="ControlThemes.xaml" />
-				<ResourceDictionary Source="MineField.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

@@ -5,10 +5,62 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MineSweeper"
 		mc:Ignorable="d"
-        Title="MineSweeper" Height="760" Width="685.714" WindowStartupLocation="CenterScreen">
+        Title="MineSweeper" Height="760" Width="685.714" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
 	<Window.Resources>
-		<local:MineSweeperModel x:Key="mineSweeperModel"/>
+		<local:MainWindowViewModel x:Key="mineSweeperModel"/>
 		<local:TotalSecondsConverter x:Key="TotalSecondsConverter"/>
+
+		<Style x:Key="openBorder" TargetType="Border">
+			<Setter Property="BorderThickness" Value="0.2"/>
+			<Setter Property="BorderBrush" Value="{StaticResource backroundDarkBrush}"/>
+			<Setter Property="Background" Value="{StaticResource backroundLightBrush}"/>
+		</Style>
+
+		<DataTemplate x:Key="emptyCell">
+			<Border Style="{StaticResource openBorder}"/>
+		</DataTemplate>
+
+		<DataTemplate x:Key="mineCell">
+			<Border Style="{StaticResource openBorder}">
+				<Viewbox>
+					<Path Margin="120" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
+				</Viewbox>
+			</Border>
+		</DataTemplate>
+
+		<DataTemplate x:Key="observerCell">
+			<Border Style="{StaticResource openBorder}">
+				<Viewbox>
+					<TextBlock Text="{Binding NeighborMines}" TextAlignment="Center" HorizontalAlignment="Center">
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="Foreground" Value="{StaticResource textBrush}"/>
+								<Style.Triggers>
+									<Trigger Property="Text" Value="1">
+										<Setter Property="Foreground" Value="Blue"/>
+									</Trigger>
+									<Trigger Property="Text" Value="2">
+										<Setter Property="Foreground" Value="Green"/>
+									</Trigger>
+									<Trigger Property="Text" Value="3">
+										<Setter Property="Foreground" Value="Red"/>
+									</Trigger>
+									<Trigger Property="Text" Value="4">
+										<Setter Property="Foreground" Value="DarkBlue"/>
+									</Trigger>
+									<Trigger Property="Text" Value="5">
+										<Setter Property="Foreground" Value="DarkRed"/>
+									</Trigger>
+									<Trigger Property="Text" Value="6">
+										<Setter Property="Foreground" Value="DarkCyan"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</Viewbox>
+			</Border>
+		</DataTemplate>
 
 		<Style x:Key="closedBorder" TargetType="Border">
 			<Setter Property="Background" Value="{StaticResource backroundDarkBrush}"/>
@@ -62,17 +114,6 @@
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
-		<Style x:Key="hideStyle" TargetType="StackPanel">
-			<Setter Property="Visibility" Value="Visible"/>
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding IsWon}" Value="true">
-					<Setter Property="Visibility" Value="Hidden"/>
-				</DataTrigger>
-				<DataTrigger Binding="{Binding IsLost}" Value="true">
-					<Setter Property="Visibility" Value="Hidden"/>
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
 		<!--grid style data template-->
 		<DataTemplate x:Key="gridTemplate">
 			<ItemsControl ItemsSource="{Binding}">
@@ -88,6 +129,18 @@
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>
 		</DataTemplate>
+
+		<Style x:Key="hideStyle" TargetType="StackPanel">
+			<Setter Property="Visibility" Value="Visible"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsWon}" Value="true">
+					<Setter Property="Visibility" Value="Hidden"/>
+				</DataTrigger>
+				<DataTrigger Binding="{Binding IsLost}" Value="true">
+					<Setter Property="Visibility" Value="Hidden"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
 
 	</Window.Resources>
 	<!--start visual tree-->
@@ -146,6 +199,7 @@
 			</StackPanel>
 		</Grid>
 		<!--mine grid-->
+		<!--<local:MineField Grid.Row="1" DataContext="{Binding Board}"/>-->
 		<Viewbox Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding MineField}" ItemTemplate="{DynamicResource gridTemplate}">
 				<ItemsControl.ItemsPanel>
