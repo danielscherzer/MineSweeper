@@ -28,21 +28,47 @@ namespace MineSweeper
 			Resources["mineSweeperModel"] = new MineSweeperModel(100, 30, 20);
 		}
 
-		private void OpenCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		private void PrimaryActionCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if ((sender as Border)?.DataContext is IField field) field.IsOpen = true;
+			if(Mark)
+			{
+				MarkCell(sender);
+			}
+			else
+			{
+				OpenCell(sender);
+			}
 		}
 
-		private void MarkCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		private void SecondaryActionCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if ((sender as Border)?.DataContext is IField field) 
-				field.IsMarked = !field.IsMarked;
+			if (!Mark)
+			{
+				MarkCell(sender);
+			}
+			else
+			{
+				OpenCell(sender);
+			}
 		}
 
-		private void OpenEmptyField(object sender, RoutedEventArgs e)
+		private void OpenEmptyCell(object sender, RoutedEventArgs e)
 		{
 			var mineSweeperModel = Resources["mineSweeperModel"] as MineSweeperModel;
-			mineSweeperModel?.OpenEmptyField();
+			mineSweeperModel?.OpenEmptyCell();
+		}
+
+		private bool Mark => mark.IsChecked.HasValue && mark.IsChecked.Value;
+
+		private static void MarkCell(object sender)
+		{
+			if ((sender as Border)?.DataContext is ICell cell)
+				cell.IsMarked = !cell.IsMarked;
+		}
+
+		private static void OpenCell(object sender)
+		{
+			if ((sender as Border)?.DataContext is ICell cell) cell.IsOpen = true;
 		}
 	}
 }

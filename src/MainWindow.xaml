@@ -8,97 +8,39 @@
         Title="MineSweeper" Height="760" Width="685.714" WindowStartupLocation="CenterScreen">
 	<Window.Resources>
 		<local:MineSweeperModel x:Key="mineSweeperModel"/>
+		<local:TotalSecondsConverter x:Key="TotalSecondsConverter"/>
 
-		<Style x:Key="openBorder" TargetType="Border">
-			<Setter Property="BorderThickness" Value="0.2"/>
-			<Setter Property="BorderBrush" Value="DarkGray"/>
-			<Setter Property="Background" Value="#FFD5D2D2"/>
-		</Style>
 		<Style x:Key="closedBorder" TargetType="Border">
-			<Style.Resources>
-				<Color x:Key="background">Silver</Color>
-				<SolidColorBrush x:Key="brushBackground" Color="{StaticResource background}"/>
-			</Style.Resources>
-			<Setter Property="Background" Value="{StaticResource brushBackground}"/>
+			<Setter Property="Background" Value="{StaticResource backroundDarkBrush}"/>
 			<Setter Property="BorderThickness" Value="3"/>
 			<Setter Property="BorderBrush" Value="{StaticResource 3dBrush}"/>
-			<EventSetter Event="MouseLeftButtonDown" Handler="OpenCell"/>
-			<EventSetter Event="MouseRightButtonDown" Handler="MarkCell"/>
+			<EventSetter Event="MouseLeftButtonDown" Handler="PrimaryActionCell"/>
+			<EventSetter Event="MouseRightButtonDown" Handler="SecondaryActionCell"/>
 			<Style.Triggers>
-				<EventTrigger RoutedEvent="MouseLeftButtonDown">
-					<BeginStoryboard>
-						<Storyboard>
-							<DoubleAnimation To="0" Duration="0:0:1" Storyboard.TargetProperty="Opacity"/>
-						</Storyboard>
-					</BeginStoryboard>
-				</EventTrigger>
 				<EventTrigger RoutedEvent="MouseEnter">
 					<BeginStoryboard>
 						<Storyboard>
-							<ColorAnimation To="#B3B3B3" Duration="0:0:0.1" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
+							<ColorAnimation To="{StaticResource backgroundLight}" Duration="0:0:0" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
 						</Storyboard>
 					</BeginStoryboard>
 				</EventTrigger>
 				<EventTrigger RoutedEvent="MouseLeave">
 					<BeginStoryboard>
 						<Storyboard>
-							<ColorAnimation To="{StaticResource background}" Duration="0:0:0.1" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
+							<ColorAnimation To="{StaticResource backgroundDark}" Duration="0:0:0" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
 						</Storyboard>
 					</BeginStoryboard>
 				</EventTrigger>
 			</Style.Triggers>
 		</Style>
 		
-		<DataTemplate x:Key="emptyCell">
-			<Border Style="{StaticResource openBorder}"/>
-		</DataTemplate>
-		<DataTemplate x:Key="mineCell">
-			<Border Style="{StaticResource openBorder}">
-				<Viewbox>
-					<Path Margin="120" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
-				</Viewbox>
-			</Border>
-		</DataTemplate>
-		<DataTemplate x:Key="observerCell">
-			<Border Style="{StaticResource openBorder}">
-				<Viewbox>
-					<TextBlock Text="{Binding NeighborMines}" TextAlignment="Center" HorizontalAlignment="Center">
-						<TextBlock.Style>
-							<Style TargetType="TextBlock">
-								<Setter Property="Foreground" Value="Black"/>
-								<Style.Triggers>
-									<Trigger Property="Text" Value="1">
-										<Setter Property="Foreground" Value="Blue"/>
-									</Trigger>
-									<Trigger Property="Text" Value="2">
-										<Setter Property="Foreground" Value="Green"/>
-									</Trigger>
-									<Trigger Property="Text" Value="3">
-										<Setter Property="Foreground" Value="Red"/>
-									</Trigger>
-									<Trigger Property="Text" Value="4">
-										<Setter Property="Foreground" Value="DarkBlue"/>
-									</Trigger>
-									<Trigger Property="Text" Value="5">
-										<Setter Property="Foreground" Value="DarkRed"/>
-									</Trigger>
-									<Trigger Property="Text" Value="6">
-										<Setter Property="Foreground" Value="DarkCyan"/>
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</TextBlock.Style>
-					</TextBlock>
-				</Viewbox>
-			</Border>
-		</DataTemplate>
 		<DataTemplate x:Key="closedCell">
 			<Border Style="{StaticResource closedBorder}"/>
 		</DataTemplate>
 		<DataTemplate x:Key="markedCell">
 			<Border Style="{StaticResource closedBorder}">
 				<Viewbox>
-					<Path Margin="120" Fill="{StaticResource lightBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
+					<Path Margin="120" Fill="{StaticResource highlightBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
 				</Viewbox>
 			</Border>
 		</DataTemplate>
@@ -120,10 +62,13 @@
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
-		<Style x:Key="wonHideStyle" TargetType="StackPanel">
+		<Style x:Key="hideStyle" TargetType="StackPanel">
 			<Setter Property="Visibility" Value="Visible"/>
 			<Style.Triggers>
 				<DataTrigger Binding="{Binding IsWon}" Value="true">
+					<Setter Property="Visibility" Value="Hidden"/>
+				</DataTrigger>
+				<DataTrigger Binding="{Binding IsLost}" Value="true">
 					<Setter Property="Visibility" Value="Hidden"/>
 				</DataTrigger>
 			</Style.Triggers>
@@ -143,62 +88,60 @@
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>
 		</DataTemplate>
-		<Style TargetType="Button">
-			<Setter Property="BorderThickness" Value="3"/>
-			<Setter Property="Height" Value="auto"/>
-			<Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"/>
-			<Setter Property="BorderBrush" Value="{StaticResource 3dBrush}"/>
-		</Style>
+
 	</Window.Resources>
 	<!--start visual tree-->
-	<Grid Background="DarkGray" DataContext="{DynamicResource mineSweeperModel}">
+	<Grid Background="{StaticResource backroundDarkBrush}" DataContext="{DynamicResource mineSweeperModel}">
 		<Grid.RowDefinitions>
 			<RowDefinition Name="row" Height="1*"/>
 			<RowDefinition Height="13*"/>
 		</Grid.RowDefinitions>
 		<Grid>
-			<!--mines left-->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Style="{StaticResource wonHideStyle}">
+			<!--new level-->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 				<Viewbox>
-					<Path Margin="180" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
-				</Viewbox>
-				<Viewbox>
-					<TextBlock Foreground="{StaticResource darkBrush}" Text="{Binding MinesToMark}" Margin="0,0,0,1" FontWeight="Bold"/>
-				</Viewbox>
-			</StackPanel>
-			<!--restart button-->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<Viewbox>
-					<Path Margin="100" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource redoPathData}"/>
+					<Path Margin="100" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource redoPathData}"/>
 				</Viewbox>
 				<Button Click="RestartEasy">
 					<Viewbox>
-						<TextBlock Text="1" FontWeight="Bold"/>
+						<TextBlock Text="10x10" FontWeight="Bold"/>
 					</Viewbox>
 				</Button>
 				<Button Click="RestartMedium">
 					<Viewbox>
-						<TextBlock Text="2" FontWeight="Bold" />
+						<TextBlock Text="15x10" FontWeight="Bold" />
 					</Viewbox>
 				</Button>
 				<Button Click="RestartHard">
 					<Viewbox>
-						<TextBlock Text="3" FontWeight="Bold"/>
+						<TextBlock Text="30x20" FontWeight="Bold"/>
 					</Viewbox>
 				</Button>
-				<Button Click="OpenEmptyField">
+			</StackPanel>
+			<!--level specific info and actions-->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource hideStyle}">
+				<ToggleButton x:Name="mark" IsChecked="False" IsThreeState="False">
+					<Viewbox>
+						<TextBlock Foreground="{StaticResource textBrush}" Text="OPEN" Margin="0,0,3,0" FontWeight="Bold"/>
+						<!--<Path Margin="120" Fill="{StaticResource highlightBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>-->
+					</Viewbox>
+				</ToggleButton>
+				<Button Click="OpenEmptyCell">
 					<Viewbox>
 						<TextBlock Text="?" FontWeight="Bold"/>
 					</Viewbox>
 				</Button>
-			</StackPanel>
-			<!--timer-->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource wonHideStyle}">
 				<Viewbox>
-					<Path Margin="180" Fill="{StaticResource darkBrush}" Stretch="Fill" Data="{StaticResource pocketWatchPathData}"/>
+					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource pocketWatchPathData}"/>
 				</Viewbox>
 				<Viewbox>
-					<TextBlock Foreground="{StaticResource darkBrush}" Text="{Binding TimePlayed}" Margin="0,0,3,0" FontWeight="Bold"/>
+					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding TimePlayed, Converter={StaticResource TotalSecondsConverter}}" Margin="0,0,3,0" FontWeight="Bold"/>
+				</Viewbox>
+				<Viewbox>
+					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
+				</Viewbox>
+				<Viewbox>
+					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding MinesToMark}" Margin="0,0,3,1" FontWeight="Bold"/>
 				</Viewbox>
 			</StackPanel>
 		</Grid>
@@ -226,7 +169,7 @@
 					</Style>
 				</TextBlock.Style>
 				<Bold>
-					YOU WON IN <Run Text="{Binding Path=TimePlayed, Mode=OneWay}"/>!<LineBreak/>
+					YOU WON IN <Run Text="{Binding Path=TimePlayed, Converter={StaticResource TotalSecondsConverter}, Mode=OneWay}"/> SECONDS!<LineBreak/>
 					YOU ARE SO AMAZING!!!
 				</Bold>
 			</TextBlock>

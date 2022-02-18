@@ -2,7 +2,7 @@
 
 namespace MineSweeper
 {
-	public class Field : IField
+	public class Cell : ICell
 	{
 		public bool IsMine
 		{

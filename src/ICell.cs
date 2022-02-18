@@ -2,7 +2,7 @@
 
 namespace MineSweeper
 {
-	public interface IField : INotifyPropertyChanged
+	public interface ICell : INotifyPropertyChanged
 	{
 		bool IsMarked { get; set; }
 		bool IsMine { get; }
