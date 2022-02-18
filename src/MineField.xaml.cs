@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MineSweeper
@@ -10,16 +11,17 @@ namespace MineSweeper
 	{
 		public MineField()
 		{
-			InitializeComponent();
+			InitializeComponent();	
 		}
 
-		public bool Mark { get; set; } //TODO: set mark
-
-		private void CellMouseDown(object sender, MouseButtonEventArgs e)
+		public event MouseButtonEventHandler CellMouseDown; 
+		
+		private void OnCellMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if ((sender as Border)?.DataContext is ICell cell)
 			{
-				if (e.LeftButton == MouseButtonState.Pressed ^ Mark)
+				CellMouseDown?.Invoke(this, e);
+				if (e.LeftButton == MouseButtonState.Pressed)
 				{
 					cell.IsOpen = true;
 				}
@@ -27,6 +29,38 @@ namespace MineSweeper
 				{
 					cell.IsMarked = !cell.IsMarked;
 				}
+			}
+		}
+
+		private void Border_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
+		{
+			e.ManipulationContainer = this;
+			e.Handled = true;
+		}
+
+		private void Border_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+		{
+			if ((sender as Border)?.DataContext is ICell cell)
+			{
+				var len = e.CumulativeManipulation.Translation.Length;
+				if (len > 10)
+				{
+					cell.IsMarked = true;
+				}
+				e.Handled = true;
+			}
+		}
+
+		private void Border_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+		{
+			if ((sender as Border)?.DataContext is ICell cell)
+			{
+				var len = e.TotalManipulation.Translation.Length;
+				if (len < 10)
+				{
+					cell.IsOpen = true;
+				}
+				e.Handled = true;
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 		xmlns:local="clr-namespace:MineSweeper"
 		xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 		mc:Ignorable="d"
-        Title="MineSweeper" Height="760" Width="685.714" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
+        Title="MineSweeper" Height="760" Width="685" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
 	<Window.Resources>
 		<local:MainWindowViewModel x:Key="mineSweeperModel"/>
 		<local:TotalSecondsConverter x:Key="TotalSecondsConverter"/>
@@ -52,15 +52,10 @@
 					</Viewbox>
 				</Button>
 			</StackPanel>
+
 			<!--level specific info and actions-->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource hideStyle}">
-				<ToggleButton x:Name="mark" IsChecked="False" IsThreeState="False" Click="Mark_Click">
-					<Viewbox>
-						<TextBlock Foreground="{StaticResource textBrush}" Text="OPEN" Margin="0,0,3,0" FontWeight="Bold"/>
-						<!--<Path Margin="120" Fill="{StaticResource highlightBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>-->
-					</Viewbox>
-				</ToggleButton>
-				<Button>
+				<Button Margin="0,0,6,0">
 					<behaviors:Interaction.Triggers>
 						<behaviors:EventTrigger EventName="Click">
 							<behaviors:CallMethodAction TargetObject="{Binding Board}" MethodName="OpenEmptyCell"/>
@@ -74,7 +69,7 @@
 					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource pocketWatchPathData}"/>
 				</Viewbox>
 				<Viewbox>
-					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding TimePlayed, Converter={StaticResource TotalSecondsConverter}}" Margin="0,0,3,0" FontWeight="Bold"/>
+					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding TimePlayed, Converter={StaticResource TotalSecondsConverter}}" Margin="0,0,6,1" FontWeight="Bold"/>
 				</Viewbox>
 				<Viewbox>
 					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>

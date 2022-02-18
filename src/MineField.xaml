@@ -67,7 +67,11 @@
 			<Setter Property="Background" Value="{StaticResource backroundDarkBrush}"/>
 			<Setter Property="BorderThickness" Value="3"/>
 			<Setter Property="BorderBrush" Value="{StaticResource 3dBrush}"/>
-			<EventSetter Event="MouseDown" Handler="CellMouseDown"/>
+			<Setter Property="IsManipulationEnabled" Value="True"/>
+			<EventSetter Event="MouseDown" Handler="OnCellMouseDown"/>
+			<EventSetter Event="ManipulationStarting" Handler="Border_ManipulationStarting"/>
+			<EventSetter Event="ManipulationDelta" Handler="Border_ManipulationDelta"/>
+			<EventSetter Event="ManipulationCompleted" Handler="Border_ManipulationCompleted"/>
 			<Style.Triggers>
 				<EventTrigger RoutedEvent="MouseEnter">
 					<BeginStoryboard>

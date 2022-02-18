@@ -27,20 +27,11 @@ namespace MineSweeper
 			Resources["mineSweeperModel"] = new MainWindowViewModel(100, 30, 20);
 		}
 
-		private bool Mark => mark.IsChecked.HasValue && mark.IsChecked.Value;
-
 		private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 #if DEBUG
 			if (e.Key == System.Windows.Input.Key.Escape) Close();
 #endif
-		}
-
-		private void Mark_Click(object sender, RoutedEventArgs e)
-		{
-			var mineSweeperModel = Resources["mineSweeperModel"] as MainWindowViewModel;
-			//mineSweeperModel.Board
-			//if (Mark)
 		}
 	}
 }
