@@ -67,8 +67,7 @@
 			<Setter Property="Background" Value="{StaticResource backroundDarkBrush}"/>
 			<Setter Property="BorderThickness" Value="3"/>
 			<Setter Property="BorderBrush" Value="{StaticResource 3dBrush}"/>
-			<EventSetter Event="MouseLeftButtonDown" Handler="PrimaryActionCell"/>
-			<EventSetter Event="MouseRightButtonDown" Handler="SecondaryActionCell"/>
+			<EventSetter Event="MouseDown" Handler="CellMouseDown"/>
 			<Style.Triggers>
 				<EventTrigger RoutedEvent="MouseEnter">
 					<BeginStoryboard>

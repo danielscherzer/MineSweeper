@@ -22,12 +22,7 @@ namespace MineSweeper
 			if(Board.IsLost || Board.IsWon) timer.IsEnabled = false;
 		}
 
-		public MineFieldViewModel Board { get; } = new();
-
-		public void OpenEmptyCell()
-		{
-			Board.OpenEmptyCell();
-		}
+		public MineFieldViewModel Board { get; }
 
 		public TimeSpan TimePlayed
 		{

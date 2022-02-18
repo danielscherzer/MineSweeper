@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MineSweeper
 {
@@ -12,41 +13,21 @@ namespace MineSweeper
 			InitializeComponent();
 		}
 
-		public bool Mark { get; set; }
+		public bool Mark { get; set; } //TODO: set mark
 
-		private void PrimaryActionCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
-		{
-			if (Mark)
-			{
-				MarkCell(sender);
-			}
-			else
-			{
-				OpenCell(sender);
-			}
-		}
-
-		private void SecondaryActionCell(object sender, System.Windows.Input.MouseButtonEventArgs e)
-		{
-			if (!Mark)
-			{
-				MarkCell(sender);
-			}
-			else
-			{
-				OpenCell(sender);
-			}
-		}
-
-		private static void MarkCell(object sender)
+		private void CellMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			if ((sender as Border)?.DataContext is ICell cell)
-				cell.IsMarked = !cell.IsMarked;
-		}
-
-		private static void OpenCell(object sender)
-		{
-			if ((sender as Border)?.DataContext is ICell cell) cell.IsOpen = true;
+			{
+				if (e.LeftButton == MouseButtonState.Pressed ^ Mark)
+				{
+					cell.IsOpen = true;
+				}
+				else
+				{
+					cell.IsMarked = !cell.IsMarked;
+				}
+			}
 		}
 	}
 }
