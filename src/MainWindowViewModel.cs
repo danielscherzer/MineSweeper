@@ -9,8 +9,8 @@ namespace MineSweeper
 		public MainWindowViewModel() : this(10, 10, 10) { }
 		public MainWindowViewModel(int mines, int columns, int rows)
 		{
-			Board = new MineFieldViewModel(mines, columns, rows);
-			Board.PropertyChanged += Board_PropertyChanged;
+			MineField = new MineFieldViewModel(mines, columns, rows);
+			MineField.PropertyChanged += Board_PropertyChanged;
 
 			timer.Interval = TimeSpan.FromSeconds(1);
 			timer.Tick += (s, e) => TimePlayed += TimeSpan.FromSeconds(1);
@@ -19,10 +19,28 @@ namespace MineSweeper
 
 		private void Board_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-			if(Board.IsLost || Board.IsWon) timer.IsEnabled = false;
+			if(MineField.IsLost || MineField.IsWon) timer.IsEnabled = false;
 		}
 
-		public MineFieldViewModel Board { get; }
+		public MineFieldViewModel MineField { get; }
+
+		public void OpenEmptyCell()
+		{
+			foreach (var column in MineField.MineField)
+			{
+				foreach (var cell in column)
+				{
+					if (0 == cell.NeighborMines)
+					{
+						if (!cell.IsOpen)
+						{
+							cell.IsOpen = true;
+							return;
+						}
+					}
+				}
+			}
+		}
 
 		public TimeSpan TimePlayed
 		{

@@ -31,7 +31,7 @@ namespace MineSweeper
 			}
 			Random rand = new();
 			//place mines
-			for (int i = 0; i < MinesToMark;)
+			for (int i = 0; i < mines;)
 			{
 				int x = rand.Next(0, Columns);
 				int y = rand.Next(0, Rows);
@@ -40,24 +40,6 @@ namespace MineSweeper
 					_mineField[x][y].IsMine = true;
 					ForEachNeighbor(x, y, Increment);
 					++i;
-				}
-			}
-		}
-
-		public void OpenEmptyCell()
-		{
-			foreach (var column in MineField)
-			{
-				foreach (var cell in column)
-				{
-					if (0 == cell.NeighborMines)
-					{
-						if (!cell.IsOpen)
-						{
-							cell.IsOpen = true;
-							return;
-						}
-					}
 				}
 			}
 		}
@@ -108,8 +90,8 @@ namespace MineSweeper
 
 		private void CellChanged(Cell cell, string propertyName, int x, int y)
 		{
-			if (IsLost || IsLost) return;
-			if (nameof(cell.IsMarked) == propertyName)
+			if (IsLost || IsWon) return;
+			if (nameof(Cell.IsMarked) == propertyName)
 			{
 				MinesToMark += cell.IsMarked ? -1 : 1;
 			}

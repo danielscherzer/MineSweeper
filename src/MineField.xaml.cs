@@ -11,56 +11,58 @@ namespace MineSweeper
 	{
 		public MineField()
 		{
-			InitializeComponent();	
+			InitializeComponent();
 		}
 
-		public event MouseButtonEventHandler CellMouseDown; 
-		
-		private void OnCellMouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if ((sender as Border)?.DataContext is ICell cell)
-			{
-				CellMouseDown?.Invoke(this, e);
-				if (e.LeftButton == MouseButtonState.Pressed)
-				{
-					cell.IsOpen = true;
-				}
-				else
-				{
-					cell.IsMarked = !cell.IsMarked;
-				}
-			}
-		}
+		private const int delta = 10;
 
-		private void Border_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
+		private void CellManipulationStarting(object sender, ManipulationStartingEventArgs e)
 		{
 			e.ManipulationContainer = this;
 			e.Handled = true;
 		}
 
-		private void Border_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+		private void CellManipulationDelta(object sender, ManipulationDeltaEventArgs e)
 		{
-			if ((sender as Border)?.DataContext is ICell cell)
+			IfCell(sender, cell =>
 			{
 				var len = e.CumulativeManipulation.Translation.Length;
-				if (len > 10)
+				if (len > delta)
 				{
 					cell.IsMarked = true;
 				}
 				e.Handled = true;
-			}
+			});
 		}
 
-		private void Border_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+		private void CellManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
 		{
-			if ((sender as Border)?.DataContext is ICell cell)
+			IfCell(sender, cell =>
 			{
 				var len = e.TotalManipulation.Translation.Length;
-				if (len < 10)
+				if (len < delta)
 				{
 					cell.IsOpen = true;
 				}
 				e.Handled = true;
+			});
+		}
+
+		private void CellMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			IfCell(sender, cell => cell.IsOpen = true);
+		}
+
+		private void CellMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			IfCell(sender, cell => cell.IsMarked = !cell.IsMarked);
+		}
+
+		private static void IfCell(object sender, Action<ICell> action)
+		{
+			if ((sender as Border)?.DataContext is ICell cell)
+			{
+				action(cell);
 			}
 		}
 	}

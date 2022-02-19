@@ -9,16 +9,16 @@
         Title="MineSweeper" Height="760" Width="685" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
 	<Window.Resources>
 		<local:MainWindowViewModel x:Key="mineSweeperModel"/>
-		<local:TotalSecondsConverter x:Key="TotalSecondsConverter"/>
+		<local:TotalSecondsConverter x:Key="totalSecondsConverter"/>
 
-		<Style x:Key="hideStyle" TargetType="StackPanel">
+		<Style x:Key="wonLostStyle" TargetType="FrameworkElement">
 			<Setter Property="Visibility" Value="Visible"/>
 			<Style.Triggers>
-				<DataTrigger Binding="{Binding Board.IsWon}" Value="true">
-					<Setter Property="Visibility" Value="Hidden"/>
+				<DataTrigger Binding="{Binding MineField.IsWon}" Value="true">
+					<Setter Property="IsEnabled" Value="False"/>
 				</DataTrigger>
-				<DataTrigger Binding="{Binding Board.IsLost}" Value="true">
-					<Setter Property="Visibility" Value="Hidden"/>
+				<DataTrigger Binding="{Binding MineField.IsLost}" Value="true">
+					<Setter Property="IsEnabled" Value="False"/>
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
@@ -30,12 +30,12 @@
 			<RowDefinition Name="row" Height="1*"/>
 			<RowDefinition Height="13*"/>
 		</Grid.RowDefinitions>
-		<Grid>
+		<Grid Grid.Row="0">
 			<!--new level-->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-				<Viewbox>
+				<!--<Viewbox>
 					<Path Margin="100" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource redoPathData}"/>
-				</Viewbox>
+				</Viewbox>-->
 				<Button Click="RestartEasy">
 					<Viewbox>
 						<TextBlock Text="10x10" FontWeight="Bold"/>
@@ -52,13 +52,12 @@
 					</Viewbox>
 				</Button>
 			</StackPanel>
-
 			<!--level specific info and actions-->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource hideStyle}">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Style="{StaticResource wonLostStyle}">
 				<Button Margin="0,0,6,0">
 					<behaviors:Interaction.Triggers>
 						<behaviors:EventTrigger EventName="Click">
-							<behaviors:CallMethodAction TargetObject="{Binding Board}" MethodName="OpenEmptyCell"/>
+							<behaviors:CallMethodAction TargetObject="{Binding}" MethodName="OpenEmptyCell"/>
 						</behaviors:EventTrigger>
 					</behaviors:Interaction.Triggers>
 					<Viewbox>
@@ -66,21 +65,24 @@
 					</Viewbox>
 				</Button>
 				<Viewbox>
-					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource pocketWatchPathData}"/>
-				</Viewbox>
-				<Viewbox>
-					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding TimePlayed, Converter={StaticResource TotalSecondsConverter}}" Margin="0,0,6,1" FontWeight="Bold"/>
-				</Viewbox>
-				<Viewbox>
 					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
 				</Viewbox>
 				<Viewbox>
-					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding Board.MinesToMark}" Margin="0,0,3,1" FontWeight="Bold"/>
+					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding MineField.MinesToMark}" Margin="0,0,3,1" FontWeight="Bold"/>
+				</Viewbox>
+			</StackPanel>
+			<!--time-->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Viewbox>
+					<Path Margin="180" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource pocketWatchPathData}"/>
+				</Viewbox>
+				<Viewbox>
+					<TextBlock Foreground="{StaticResource textBrush}" Text="{Binding TimePlayed, Converter={StaticResource totalSecondsConverter}}" Margin="0,0,3,1" FontWeight="Bold"/>
 				</Viewbox>
 			</StackPanel>
 		</Grid>
 		<!--mine grid-->
-		<local:MineField Grid.Row="1" DataContext="{Binding Board}"/>
+		<local:MineField Grid.Row="1" DataContext="{Binding MineField}"/>
 		<!--won screen-->
 		<Viewbox Grid.Row="1">
 			<TextBlock Name="won" Background="Purple" Foreground="DeepPink" TextWrapping="Wrap" TextAlignment="Center">
@@ -88,14 +90,14 @@
 					<Style TargetType="TextBlock">
 						<Setter Property="Visibility" Value="Hidden"/>
 						<Style.Triggers>
-							<DataTrigger Binding="{Binding Board.IsWon}" Value="true">
+							<DataTrigger Binding="{Binding MineField.IsWon}" Value="true">
 								<Setter Property="Visibility" Value="Visible"/>
 							</DataTrigger>
 						</Style.Triggers>
 					</Style>
 				</TextBlock.Style>
 				<Bold>
-					YOU WON IN <Run Text="{Binding Path=TimePlayed, Converter={StaticResource TotalSecondsConverter}, Mode=OneWay}"/> SECONDS!<LineBreak/>
+					YOU WON IN <Run Text="{Binding Path=TimePlayed, Converter={StaticResource totalSecondsConverter}, Mode=OneWay}"/> SECONDS!<LineBreak/>
 					YOU ARE SO AMAZING!!!
 				</Bold>
 			</TextBlock>

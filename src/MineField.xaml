@@ -6,23 +6,22 @@
              xmlns:local="clr-namespace:MineSweeper"
              mc:Ignorable="d" 
 			 d:DesignHeight="450" d:DesignWidth="450" d:DataContext="{DynamicResource board}" 
-			 Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
 			 HorizontalAlignment ="Stretch" HorizontalContentAlignment ="Stretch" VerticalAlignment ="Stretch" VerticalContentAlignment ="Stretch">
 	<UserControl.Resources>
 		<local:MineFieldViewModel x:Key="board"/>
 
-		<Style x:Key="openBorder" TargetType="Border">
+		<Style x:Key="openCellStyle" TargetType="Border">
 			<Setter Property="BorderThickness" Value="0.2"/>
 			<Setter Property="BorderBrush" Value="{StaticResource backroundDarkBrush}"/>
 			<Setter Property="Background" Value="{StaticResource backroundLightBrush}"/>
 		</Style>
 
 		<DataTemplate x:Key="emptyCell">
-			<Border Style="{StaticResource openBorder}"/>
+			<Border Style="{StaticResource openCellStyle}"/>
 		</DataTemplate>
 
 		<DataTemplate x:Key="mineCell">
-			<Border Style="{StaticResource openBorder}">
+			<Border Style="{StaticResource openCellStyle}">
 				<Viewbox>
 					<Path Margin="120" Fill="{StaticResource textBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
 				</Viewbox>
@@ -30,7 +29,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="observerCell">
-			<Border Style="{StaticResource openBorder}">
+			<Border Style="{StaticResource openCellStyle}">
 				<Viewbox>
 					<TextBlock Text="{Binding NeighborMines}" TextAlignment="Center" HorizontalAlignment="Center">
 						<TextBlock.Style>
@@ -63,39 +62,22 @@
 			</Border>
 		</DataTemplate>
 
-		<Style x:Key="closedBorder" TargetType="Border">
-			<Setter Property="Background" Value="{StaticResource backroundDarkBrush}"/>
+		<Style x:Key="closedCellStyle" TargetType="Border" BasedOn="{StaticResource buttonStyle}">
 			<Setter Property="BorderThickness" Value="3"/>
-			<Setter Property="BorderBrush" Value="{StaticResource 3dBrush}"/>
 			<Setter Property="IsManipulationEnabled" Value="True"/>
-			<EventSetter Event="MouseDown" Handler="OnCellMouseDown"/>
-			<EventSetter Event="ManipulationStarting" Handler="Border_ManipulationStarting"/>
-			<EventSetter Event="ManipulationDelta" Handler="Border_ManipulationDelta"/>
-			<EventSetter Event="ManipulationCompleted" Handler="Border_ManipulationCompleted"/>
-			<Style.Triggers>
-				<EventTrigger RoutedEvent="MouseEnter">
-					<BeginStoryboard>
-						<Storyboard>
-							<ColorAnimation To="{StaticResource backgroundLight}" Duration="0:0:0" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
-						</Storyboard>
-					</BeginStoryboard>
-				</EventTrigger>
-				<EventTrigger RoutedEvent="MouseLeave">
-					<BeginStoryboard>
-						<Storyboard>
-							<ColorAnimation To="{StaticResource backgroundDark}" Duration="0:0:0" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"/>
-						</Storyboard>
-					</BeginStoryboard>
-				</EventTrigger>
-			</Style.Triggers>
+			<EventSetter Event="MouseLeftButtonDown" Handler="CellMouseLeftButtonDown"/>
+			<EventSetter Event="MouseRightButtonDown" Handler="CellMouseRightButtonDown"/>
+			<EventSetter Event="ManipulationStarting" Handler="CellManipulationStarting"/>
+			<EventSetter Event="ManipulationDelta" Handler="CellManipulationDelta"/>
+			<EventSetter Event="ManipulationCompleted" Handler="CellManipulationCompleted"/>
 		</Style>
 
 		<DataTemplate x:Key="closedCell">
-			<Border Style="{StaticResource closedBorder}"/>
+			<Border Style="{StaticResource closedCellStyle}"/>
 		</DataTemplate>
 		
 		<DataTemplate x:Key="markedCell">
-			<Border Style="{StaticResource closedBorder}">
+			<Border Style="{StaticResource closedCellStyle}">
 				<Viewbox>
 					<Path Margin="120" Fill="{StaticResource highlightBrush}" Stretch="Fill" Data="{StaticResource minePathData}"/>
 				</Viewbox>
@@ -120,10 +102,9 @@
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
-
 		<!--grid style data template-->
 		<DataTemplate x:Key="gridTemplate">
-			<ItemsControl ItemsSource="{Binding}">
+			<ItemsControl ItemsSource="{Binding}" Focusable="False">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<ContentPresenter Width="30" Height="30" Content="{Binding}" Style="{StaticResource cell}"/>
@@ -136,11 +117,11 @@
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>
 		</DataTemplate>
-
 	</UserControl.Resources>
 
+	<!--board-->
 	<Viewbox>
-		<ItemsControl ItemsSource="{Binding MineField}" ItemTemplate="{DynamicResource gridTemplate}">
+		<ItemsControl ItemsSource="{Binding MineField}" ItemTemplate="{DynamicResource gridTemplate}" Focusable="False">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
 					<StackPanel Orientation="Horizontal"/>
