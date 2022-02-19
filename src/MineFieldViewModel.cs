@@ -78,15 +78,14 @@ namespace MineSweeper
 			}
 		}
 
+		public int Mines { get; }
+
+		public event PropertyChangedEventHandler? PropertyChanged;
+
 		private readonly List<List<Cell>> _mineField;
 		private bool _isLost;
 		private int _minesToMark;
-
-		public int Mines { get; }
-
 		private bool _isWon;
-
-		public event PropertyChangedEventHandler? PropertyChanged;
 
 		private void CellChanged(Cell cell, string propertyName, int x, int y)
 		{

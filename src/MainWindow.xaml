@@ -6,7 +6,7 @@
 		xmlns:local="clr-namespace:MineSweeper"
 		xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 		mc:Ignorable="d"
-        Title="MineSweeper" Height="760" Width="685" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
+		Title="MineSweeper" Height="760" Width="685" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
 	<Window.Resources>
 		<local:MainWindowViewModel x:Key="mineSweeperModel"/>
 		<local:TotalSecondsConverter x:Key="totalSecondsConverter"/>
@@ -22,8 +22,8 @@
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
-
 	</Window.Resources>
+
 	<!--start visual tree-->
 	<Grid Background="{StaticResource backroundDarkBrush}" DataContext="{DynamicResource mineSweeperModel}">
 		<Grid.RowDefinitions>
