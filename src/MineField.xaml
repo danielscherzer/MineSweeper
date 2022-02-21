@@ -14,6 +14,11 @@
 			<Setter Property="BorderThickness" Value="0.2"/>
 			<Setter Property="BorderBrush" Value="{StaticResource backroundDarkBrush}"/>
 			<Setter Property="Background" Value="{StaticResource backroundLightBrush}"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsWrongCell}" Value="true">
+					<Setter Property="Background" Value="{StaticResource wrongGuessBrush}"/>
+				</DataTrigger>
+			</Style.Triggers>
 		</Style>
 
 		<DataTemplate x:Key="emptyCell">

@@ -22,7 +22,7 @@ namespace MineSweeper
 			set
 			{
 				_open = value;
-				if(IsMarked) IsMarked = false;
+				if (IsMarked) IsMarked = false;
 				InvokePropertyChanged(nameof(IsOpen));
 			}
 		}
@@ -37,9 +37,20 @@ namespace MineSweeper
 			}
 		}
 
+		public bool IsWrongCell
+		{
+			get => _isWrongCell;
+			internal set
+			{
+				_isWrongCell = value;
+				InvokePropertyChanged(nameof(IsWrongCell));
+			}
+		}
+
 		private bool _open = false;
 		private bool _isMarked = false;
 		private bool _isMine;
+		private bool _isWrongCell = false;
 
 		private void InvokePropertyChanged(string propertyName)
 		{

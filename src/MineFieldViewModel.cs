@@ -90,16 +90,14 @@ namespace MineSweeper
 		private void CellChanged(Cell cell, string propertyName, int x, int y)
 		{
 			if (IsLost || IsWon) return;
-			if (nameof(Cell.IsMarked) == propertyName)
-			{
-				MinesToMark += cell.IsMarked ? -1 : 1;
-			}
-			else if (cell.IsOpen)
+			if (cell.IsOpen)
 			{
 				if (cell.IsMine)
 				{
 					//open mine cell -> lost
-					Lost();
+					IsLost = true;
+					OpenAllCells();
+					_mineField[x][y].IsWrongCell = true;
 					return;
 				}
 				else if (0 == cell.NeighborMines)
@@ -112,7 +110,7 @@ namespace MineSweeper
 					ForEachNeighbor(x, y, Open);
 				}
 			}
-			CheckWin();
+			UpdateState();
 		}
 
 		private void InvokePropertyChanged(string propertyName)
@@ -120,9 +118,8 @@ namespace MineSweeper
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		private void Lost()
+		private void OpenAllCells()
 		{
-			IsLost = true;
 			foreach (var column in _mineField)
 			{
 				foreach (var cell in column)
@@ -132,9 +129,10 @@ namespace MineSweeper
 			}
 		}
 
-		private void CheckWin()
+		private void UpdateState()
 		{
 			int closedCount = 0;
+			int markedCount = 0;
 			foreach (var column in _mineField)
 			{
 				foreach (var cell in column)
@@ -143,9 +141,15 @@ namespace MineSweeper
 					{
 						closedCount++;
 					}
+					if(cell.IsMarked)
+					{
+						markedCount++;
+					}
 				}
 			}
 			IsWon = closedCount == Mines;
+			if(IsWon) OpenAllCells();
+			MinesToMark = Mines - markedCount;
 		}
 
 		private void ForEachNeighbor(int x, int y, Action<int, int> action)
