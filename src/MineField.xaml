@@ -70,7 +70,7 @@
 		<Style x:Key="closedCellStyle" TargetType="Border" BasedOn="{StaticResource buttonStyle}">
 			<Setter Property="BorderThickness" Value="3"/>
 			<Setter Property="IsManipulationEnabled" Value="True"/>
-			<EventSetter Event="MouseLeftButtonDown" Handler="CellMouseLeftButtonDown"/>
+			<EventSetter Event="MouseLeftButtonUp" Handler="CellMouseLeftButtonUp"/>
 			<EventSetter Event="MouseRightButtonDown" Handler="CellMouseRightButtonDown"/>
 			<EventSetter Event="ManipulationStarting" Handler="CellManipulationStarting"/>
 			<EventSetter Event="ManipulationDelta" Handler="CellManipulationDelta"/>

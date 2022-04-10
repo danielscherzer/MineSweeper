@@ -22,15 +22,6 @@
 			<Trigger Property = "IsMouseOver" Value = "True">
 				<Setter Property="Background" Value="{StaticResource selectedBrush}"/>
 			</Trigger>
-			<EventTrigger RoutedEvent="MouseLeftButtonDown">
-				<BeginStoryboard>
-					<Storyboard>
-						<DoubleAnimation To="300" Duration="0:0:1.5" 
-                AccelerationRatio="0.10" DecelerationRatio="0.25" 
-                Storyboard.TargetProperty="(Canvas.Width)" />
-					</Storyboard>
-				</BeginStoryboard>
-			</EventTrigger>
 		</Style.Triggers>
 	</Style>
 

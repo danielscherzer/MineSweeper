@@ -48,7 +48,7 @@ namespace MineSweeper
 			});
 		}
 
-		private void CellMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		private void CellMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			IfCell(sender, cell => cell.IsOpen = true);
 		}
